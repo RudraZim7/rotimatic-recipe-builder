@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotimatic Recipe Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF6A00 0%, #FFA500 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 3px;
+        }
+
+        .header-logo {
+            width: 48px;
+            height: 48px;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .controls-section {
+            padding: 20px 30px;
+            background: #f5f5f5;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .recipe-selector-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .recipe-selector-group label {
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .recipe-selector {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .recipe-selector:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 20px 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .json-preview {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 60vh;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            padding: 15px 30px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .recipe-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 300px);
+            min-height: 600px;
+        }
+
+        .recipe-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+
+        .status-message {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .controls-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .recipe-selector-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title-container">
+                <img src="logo.jpg" alt="Rotimatic Logo" class="header-logo" onerror="this.style.display='none'">
+                <h1>Rotimatic Recipe Builder</h1>
+            </div>
+            <p>Select a recipe and download in JSON format</p>
+        </div>
+
+        <div class="controls-section">
+            <div class="recipe-selector-group">
+                <label for="recipeSelector">Select Recipe:</label>
+                <select id="recipeSelector" class="recipe-selector">
+                    <option value="">-- Select a Recipe --</option>
+                    <option value="HTML Files/crisp_roti.html">Crisp Roti</option>
+                    <option value="HTML Files/jowar_bhakri.html">Jowar Bhakri</option>
+                    <option value="HTML Files/makkai_bhakri.html">Makkai Bhakri</option>
+                    <option value="HTML Files/masala_poori.html">Masala Poori</option>
+                    <option value="HTML Files/missi_bhakri.html">Missi Bhakri</option>
+                    <option value="HTML Files/multigrain_poori.html">Multigrain Poori</option>
+                    <option value="HTML Files/multigrain_roti.html">Multigrain Roti</option>
+                    <option value="HTML Files/plain_poori.html">Plain Poori</option>
+                    <option value="HTML Files/tgr_poori.html">TGR Poori</option>
+                    <option value="HTML Files/tortilla_wraps.html">Tortilla Wraps</option>
+                </select>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-warning" onclick="previewJSON()">Preview JSON</button>
+                <button class="btn btn-success" onclick="downloadJSON()">Download JSON</button>
+            </div>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div id="jsonModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>JSON Preview</h2>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <pre id="jsonPreviewContent" class="json-preview"></pre>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info" onclick="copyJSONToClipboard()">Copy to Clipboard</button>
+                    <button class="btn btn-success" onclick="downloadFromPreview()">Download JSON</button>
+                    <button class="btn btn-primary" onclick="closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="recipe-container">
+            <div id="loadingOverlay" class="loading-overlay">
+                <div>Loading recipe...</div>
+            </div>
+            <iframe id="recipeFrame" class="recipe-iframe" style="display: none;"></iframe>
+        </div>
+    </div>
+
+
+    <script>
+        let currentRecipeData = null;
+        let currentRecipeName = '';
+        let hasChanges = false;
+        let initialFormState = null;
+
+        // Recipe selector change handler
+        document.getElementById('recipeSelector').addEventListener('change', function() {
+            const selectedFile = this.value;
+            if (selectedFile) {
+                loadRecipe(selectedFile);
+            } else {
+                document.getElementById('recipeFrame').style.display = 'none';
+                document.getElementById('loadingOverlay').classList.remove('hidden');
+            }
+        });
+
+        function loadRecipe(filePath) {
+            const iframe = document.getElementById('recipeFrame');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            loadingOverlay.classList.remove('hidden');
+            iframe.style.display = 'none';
+            
+            iframe.src = filePath;
+            
+            iframe.onload = function() {
+                // Wait a bit for the iframe content to fully initialize
+                setTimeout(() => {
+                    loadingOverlay.classList.add('hidden');
+                    iframe.style.display = 'block';
+                    
+                    // Extract recipe name from file path
+                    const fileName = filePath.split('/').pop().replace('.html', '');
+                    currentRecipeName = fileName.split('_').map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                    ).join(' ');
+                    
+                    // Reset recipe data and change tracking
+                    currentRecipeData = null;
+                    hasChanges = false;
+                    
+                    // Capture initial form state and set up change tracking
+                    try {
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        if (iframeDoc) {
+                            captureInitialState(iframeDoc);
+                            setupChangeTracking(iframeDoc);
+                        }
+                    } catch (e) {
+                        console.log('Could not set up change tracking:', e);
+                    }
+                    
+                    showStatus('Recipe loaded successfully!', 'success');
+                }, 500);
+            };
+            
+            iframe.onerror = function() {
+                loadingOverlay.classList.add('hidden');
+                showStatus('Error loading recipe file. Please try again.', 'error');
+            };
+        }
+
+        function getRecipeData() {
+            const iframe = document.getElementById('recipeFrame');
+            if (!iframe.src) {
+                console.error('No iframe source');
+                return null;
+            }
+
+            try {
+                const iframeWindow = iframe.contentWindow;
+                if (!iframeWindow) {
+                    console.error('Cannot access iframe window');
+                    return null;
+                }
+                
+                let iframeDocument;
+                try {
+                    iframeDocument = iframe.contentDocument || iframeWindow.document;
+                } catch (e) {
+                    console.error('Cannot access iframe document:', e);
+                    console.log('This may be due to browser security restrictions with local files.');
+                    console.log('Try serving the files from a local web server instead.');
+                    return null;
+                }
+                
+                if (!iframeDocument) {
+                    console.error('iframe document is null');
+                    return null;
+                }
+                
+                console.log('iframe document ready state:', iframeDocument.readyState);
+                
+                // Try to access recipeData directly first (if generateJSON was already called)
+                if (iframeWindow.recipeData && Object.keys(iframeWindow.recipeData).length > 0) {
+                    console.log('Found existing recipeData in iframe window');
+                    currentRecipeData = iframeWindow.recipeData;
+                    return currentRecipeData;
+                }
+                
+                // Fallback: Generate JSON manually by reading form values
+                console.log('Generating JSON from form...');
+                const data = generateJSONFromForm(iframeDocument);
+                if (data) {
+                    console.log('Successfully generated JSON:', data.recipeName);
+                    currentRecipeData = data;
+                    return data;
+                } else {
+                    console.error('generateJSONFromForm returned null or undefined');
+                }
+                
+                return null;
+                
+            } catch (error) {
+                console.error('Error in getRecipeData:', error);
+                console.error('Error stack:', error.stack);
+                return null;
+            }
+        }
+
+        function generateJSONFromForm(doc) {
+            if (!doc) {
+                console.error('Document is null or undefined in generateJSONFromForm');
+                return null;
+            }
+            
+            console.log('Starting JSON generation from form...');
+            
+            try {
+                // Basic info - use defaults if fields are missing
+                const recipeIdEl = doc.getElementById('recipeId');
+                const recipeNameEl = doc.getElementById('recipeName');
+                const recipeVersionEl = doc.getElementById('recipeVersion');
+                const descriptionEl = doc.getElementById('description');
+                
+                const recipeId = recipeIdEl ? parseInt(recipeIdEl.value || 1) : 1;
+                const recipeName = (recipeNameEl && recipeNameEl.value) ? recipeNameEl.value : (currentRecipeName || 'Recipe');
+                const recipeVersion = (recipeVersionEl && recipeVersionEl.value) ? recipeVersionEl.value : '1.0.0';
+                const description = descriptionEl ? (descriptionEl.value || '') : '';
+
+                // Quality Control
+                const quality = {};
+                let qualityCount = 1;
+                while (true) {
+                    const softnessEl = doc.getElementById(`quality${qualityCount}_softness`);
+                    if (!softnessEl) break;
+                    
+                    quality[`option${qualityCount}`] = {
+                        softness: parseFloat(softnessEl.value) || 0,
+                        roastStep: parseInt(doc.getElementById(`quality${qualityCount}_roastStep`)?.value || 1),
+                        roastMaxStep: parseInt(doc.getElementById(`quality${qualityCount}_roastMaxStep`)?.value || 2),
+                        note: doc.getElementById(`quality${qualityCount}_note`)?.value || ""
+                    };
+                    qualityCount++;
+                }
+
+                const size = {
+                    option1: parseFloat(doc.getElementById('sizeOption1')?.value || 0),
+                    option2: parseFloat(doc.getElementById('sizeOption2')?.value || 0),
+                    upLimit: parseFloat(doc.getElementById('sizeUpLimit')?.value || 0),
+                    downLimit: parseFloat(doc.getElementById('sizeDownLimit')?.value || 0)
+                };
+
+                const softness = {
+                    option1: parseFloat(doc.getElementById('softnessOption1')?.value || 0),
+                    option2: parseFloat(doc.getElementById('softnessOption2')?.value || 0),
+                    option3: parseFloat(doc.getElementById('softnessOption3')?.value || 0),
+                    option4: parseFloat(doc.getElementById('softnessOption4')?.value || 0),
+                    option5: parseFloat(doc.getElementById('softnessOption5')?.value || 0),
+                    upLimit: parseFloat(doc.getElementById('softnessUpLimit')?.value || 0),
+                    downLimit: parseFloat(doc.getElementById('softnessDownLimit')?.value || 0)
+                };
+
+                // Settings
+                const roastLevel = {
+                    step: parseInt(doc.getElementById('roastStep')?.value || 9),
+                    duration: parseArrayInput(doc.getElementById('roastDuration')?.value || ''),
+                    topRoastTemp: parseArrayInput(doc.getElementById('topRoastTemp')?.value || ''),
+                    btmRoastTemp: parseArrayInput(doc.getElementById('btmRoastTemp')?.value || '')
+                };
+
+                const oilLevel = parseArrayInput(doc.getElementById('oilLevel')?.value || '');
+
+                // Thickness - Heating
+                const heating = {
+                    temperature: {
+                        top: parseArrayInput(doc.getElementById('heatingTopTemp')?.value || ''),
+                        bottom: parseArrayInput(doc.getElementById('heatingBottomTemp')?.value || ''),
+                        topRoast: parseArrayInput(doc.getElementById('heatingTopRoastTemp')?.value || ''),
+                        bottomRoast: parseArrayInput(doc.getElementById('heatingBottomRoastTemp')?.value || '')
+                    },
+                    tolerance: {
+                        top: parseArrayInput(doc.getElementById('heatingTopTolerance')?.value || ''),
+                        bottom: parseArrayInput(doc.getElementById('heatingBottomTolerance')?.value || ''),
+                        topRoast: parseArrayInput(doc.getElementById('heatingTopRoastTolerance')?.value || ''),
+                        bottomRoast: parseArrayInput(doc.getElementById('heatingBottomRoastTolerance')?.value || '')
+                    },
+                    warmTolerance: {
+                        top: parseArrayInput(doc.getElementById('warmTopTolerance')?.value || ''),
+                        bottom: parseArrayInput(doc.getElementById('warmBottomTolerance')?.value || ''),
+                        topRoast: parseArrayInput(doc.getElementById('warmTopRoastTolerance')?.value || ''),
+                        bottomRoast: parseArrayInput(doc.getElementById('warmBottomRoastTolerance')?.value || '')
+                    }
+                };
+
+                // Dispensing
+                const dispensing = {
+                    weight: {
+                        db: parseArrayInput(doc.getElementById('dispensingDB')?.value || ''),
+                        oil: parseArrayInput(doc.getElementById('dispensingOil')?.value || ''),
+                        ratioWaterFlour: {}
+                    },
+                    tolerance: {
+                        flour: parseArrayInput(doc.getElementById('dispensingToleranceFlour')?.value || ''),
+                        water: parseArrayInput(doc.getElementById('dispensingToleranceWater')?.value || ''),
+                        oil: parseArrayInput(doc.getElementById('dispensingToleranceOil')?.value || ''),
+                        ratioWaterFlour: parseArrayInput(doc.getElementById('dispensingToleranceRatioWaterFlour')?.value || '')
+                    }
+                };
+
+                // Flour ratios
+                let flourCount = 0;
+                while (true) {
+                    const nameEl = doc.getElementById(`flour${flourCount}_name`);
+                    if (!nameEl) break;
+                    const name = nameEl.value.trim();
+                    if (name) {
+                        const valuesEl = doc.getElementById(`flour${flourCount}_values`);
+                        dispensing.weight.ratioWaterFlour[name] = parseArrayInput(valuesEl?.value || '');
+                    }
+                    flourCount++;
+                }
+
+                // Adaptive DAK
+                const adaptiveDAK = {
+                    hardness: parseArrayInput(doc.getElementById('adaptiveDAKHardness')?.value || ''),
+                    tolerance: parseArrayInput(doc.getElementById('adaptiveDAKTolerance')?.value || ''),
+                    slurryRange: parseArrayInput(doc.getElementById('adaptiveDAKSlurryRange')?.value || '')
+                };
+
+                // Process steps
+                const processSteps = ['mixing', 'doughing', 'stabilizing', 'rounding', 'tractionlosscorrection', 'dropping', 'transferring', 'pressing', 'roasting', 'kicking'];
+                const steps = {};
+                
+                processSteps.forEach(stepName => {
+                    if (stepName === 'dropping') {
+                        // Dropping is always an empty object
+                        steps[stepName] = {};
+                    } else {
+                        steps[stepName] = {};
+                        let stepNum = 0;
+                        // Try up to 20 steps to find all existing steps
+                        while (stepNum < 20) {
+                            const stepData = readStepDataFromForm(doc, stepName, stepNum);
+                            if (!stepData || Object.keys(stepData).length === 0) {
+                                // Check if there's a step element at all
+                                const hasStep = doc.getElementById(`${stepName}_${stepNum}_module`) || 
+                                              doc.getElementById(`${stepName}_${stepNum}_vtPosition`) ||
+                                              doc.getElementById(`${stepName}_${stepNum}_command`);
+                                if (!hasStep) break;
+                            } else {
+                                steps[stepName][`step${stepNum}`] = stepData;
+                            }
+                            stepNum++;
+                        }
+                    }
+                });
+
+                // Build final JSON
+                const recipeData = {
+                    recipeId: recipeId,
+                    recipeName: recipeName,
+                    recipeVersion: recipeVersion,
+                    description: description,
+                    qualityControl: {
+                        quality: quality,
+                        size: size,
+                        softness: softness
+                    },
+                    settings: {
+                        roastLevel: roastLevel,
+                        oilLevel: oilLevel,
+                        thickness: {
+                            heating: heating,
+                            dispensing: dispensing,
+                            adaptiveDAK: adaptiveDAK,
+                            ...steps
+                        }
+                    }
+                };
+
+                console.log('Successfully generated JSON for:', recipeName);
+                return recipeData;
+            } catch (error) {
+                console.error('Error generating JSON:', error);
+                // Return minimal valid JSON structure even on error
+                return {
+                    recipeId: 1,
+                    recipeName: currentRecipeName || 'Recipe',
+                    recipeVersion: '1.0.0',
+                    description: '',
+                    qualityControl: { quality: {}, size: {}, softness: {} },
+                    settings: { roastLevel: {}, oilLevel: [], thickness: {} }
+                };
+            }
+        }
+
+        function readStepDataFromForm(doc, stepName, stepNum) {
+            if (!doc) return null;
+            
+            const step = {};
+            const fields = ['module', 'command', 'vtPosition', 'vtSpeed', 'knSpeed', 'knDuration', 
+                          'position', 'speed', 'duration', 'current', 'tolerance', 'holdTime', 
+                          'upPosition', 'upSpeed'];
+            
+            fields.forEach(field => {
+                try {
+                    const el = doc.getElementById(`${stepName}_${stepNum}_${field}`);
+                    if (el && el.value !== undefined && el.value !== '') {
+                        if (field === 'module' || field === 'command') {
+                            step[field] = el.value.trim();
+                        } else {
+                            const arr = parseArrayInput(el.value);
+                            if (arr.length > 0) {
+                                step[field] = arr;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // Skip this field if there's an error
+                    console.log(`Error reading field ${field} for ${stepName}_${stepNum}:`, e);
+                }
+            });
+
+            return Object.keys(step).length > 0 ? step : null;
+        }
+
+        function parseArrayInput(value) {
+            if (!value) return [];
+            return value.split(',').map(v => {
+                const num = parseFloat(v.trim());
+                return isNaN(num) ? 0 : num;
+            });
+        }
+
+        function captureInitialState(doc) {
+            // Capture initial form values for comparison
+            initialFormState = {};
+            const allInputs = doc.querySelectorAll('input, textarea, select');
+            allInputs.forEach(input => {
+                if (input.id) {
+                    initialFormState[input.id] = input.value;
+                }
+            });
+        }
+
+        function setupChangeTracking(doc) {
+            // Set up event listeners to track changes
+            const allInputs = doc.querySelectorAll('input, textarea, select');
+            allInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    hasChanges = true;
+                });
+                input.addEventListener('change', function() {
+                    hasChanges = true;
+                });
+            });
+        }
+
+        function checkForChanges(doc) {
+            // Check if any values have changed from initial state
+            if (!initialFormState) return false;
+            
+            const allInputs = doc.querySelectorAll('input, textarea, select');
+            for (let input of allInputs) {
+                if (input.id && initialFormState.hasOwnProperty(input.id)) {
+                    if (input.value !== initialFormState[input.id]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
+        function downloadJSON() {
+            const iframe = document.getElementById('recipeFrame');
+            if (!iframe.src) {
+                showStatus('Please select a recipe first.', 'error');
+                return;
+            }
+
+            // Check if any changes have been made
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc) {
+                    // Re-check for changes in case tracking didn't work
+                    const hasActualChanges = checkForChanges(iframeDoc) || hasChanges;
+                    
+                    if (!hasActualChanges) {
+                        showStatus('Please make at least one change to the recipe before downloading.', 'error');
+                        return;
+                    }
+                }
+            } catch (e) {
+                // If we can't check, allow download (fallback)
+                console.log('Could not verify changes, allowing download:', e);
+            }
+
+            // Get data directly from form
+            const data = getRecipeData();
+            if (data) {
+                performDownload(data);
+            } else {
+                showStatus('Could not generate JSON. Please try refreshing the page or opening in a different browser.', 'error');
+                console.error('JSON generation failed - check console for details');
+            }
+        }
+
+        function performDownload(data) {
+            try {
+                const jsonString = JSON.stringify(data, null, 4);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${data.recipeName.replace(/\s+/g, '_')}_recipe.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showStatus(`JSON file "${a.download}" downloaded successfully!`, 'success');
+            } catch (error) {
+                console.error('Error downloading JSON:', error);
+                showStatus('Error downloading JSON file.', 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${type}`;
+            
+            setTimeout(() => {
+                statusEl.classList.remove('success', 'error');
+            }, 5000);
+        }
+
+        let previewedData = null;
+
+        function previewJSON() {
+            const iframe = document.getElementById('recipeFrame');
+            if (!iframe.src) {
+                showStatus('Please select a recipe first.', 'error');
+                return;
+            }
+
+            // Check if any changes have been made
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc) {
+                    const hasActualChanges = checkForChanges(iframeDoc) || hasChanges;
+                    
+                    if (!hasActualChanges) {
+                        showStatus('Please make at least one change to the recipe before previewing.', 'error');
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.log('Could not verify changes, allowing preview:', e);
+            }
+
+            const data = getRecipeData();
+            if (data) {
+                previewedData = data;
+                const jsonString = JSON.stringify(data, null, 4);
+                document.getElementById('jsonPreviewContent').textContent = jsonString;
+                document.getElementById('jsonModal').classList.add('show');
+            } else {
+                showStatus('Could not generate JSON. Please try refreshing the page or opening in a different browser.', 'error');
+                console.error('JSON generation failed - check console for details');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('jsonModal').classList.remove('show');
+        }
+
+        function copyJSONToClipboard() {
+            const jsonText = document.getElementById('jsonPreviewContent').textContent;
+            navigator.clipboard.writeText(jsonText).then(() => {
+                showStatus('JSON copied to clipboard!', 'success');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showStatus('Failed to copy to clipboard.', 'error');
+            });
+        }
+
+        function downloadFromPreview() {
+            if (previewedData) {
+                performDownload(previewedData);
+                closeModal();
+            } else {
+                showStatus('No preview data available.', 'error');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('jsonModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+    </script>
+</body>
+</html>
