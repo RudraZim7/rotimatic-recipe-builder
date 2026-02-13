@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotimatic Recipe Builder</title>
+
+<style>
+* {margin:0;padding:0;box-sizing:border-box;}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+.header-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+.header-logo {width:40px;height:40px;}
+.section {
+    margin-bottom: 30px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.section-header {
+    background: #f5f5f5;
+    padding: 15px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+.section-header::after {content:'▼';}
+.section-header.collapsed::after {transform:rotate(-90deg);}
+.section-content {
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+.section-content.collapsed {display:none;}
+.form-group {display:flex;flex-direction:column;}
+.form-group label {font-weight:600;margin-bottom:5px;}
+.form-group input,.form-group textarea {
+    padding:10px;border:2px solid #ddd;border-radius:5px;
+}
+.nested-section {
+    margin-top:15px;padding:15px;background:#f9f9f9;
+    border-left:4px solid #667eea;border-radius:5px;
+}
+.button-group {display:flex;justify-content:center;gap:20px;padding:30px;}
+.btn {
+    padding:15px 40px;font-size:1.1em;border:none;border-radius:8px;
+    cursor:pointer;font-weight:bold;
+}
+.btn-primary {background:#667eea;color:white;}
+.btn-success {background:#28a745;color:white;}
+.info-text {font-size:0.9em;color:#666;font-style:italic;}
+.full-width {grid-column:1/-1;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="form-container">
+<form id="recipeForm">
+
+<!-- BASIC -->
+<div class="section">
+<div class="section-header" onclick="toggleSection(this)">Basic Information</div>
+<div class="section-content">
+<div class="form-group"><label>Recipe ID</label><input id="recipeId" type="number" value="26"></div>
+<div class="form-group"><label>Name</label><input id="recipeName" value="Makkai Bhakri"></div>
+<div class="form-group"><label>Version</label><input id="recipeVersion" value="1.1.3"></div>
+<div class="form-group full-width"><label>Description</label><textarea id="description">Released: wp  2025 SEPTEMBER 18 , 08:34pm</textarea></div>
+</div></div>
+
+<!-- QUALITY -->
+<div class="section">
+<div class="section-header" onclick="toggleSection(this)">Quality Control</div>
+<div class="section-content">
+<div class="nested-section full-width">
+<h4>Quality Options</h4>
+<div id="qualityOptions"></div>
+<button type="button" onclick="addQualityOption()">Add Option</button>
+</div>
+</div></div>
+
+<!-- FLOUR -->
+<div class="section">
+<div class="section-header" onclick="toggleSection(this)">Flour Ratios</div>
+<div class="section-content">
+<div class="nested-section full-width">
+<h4>Ratio Water : Flour</h4>
+<div id="flourRatios"></div>
+<button type="button" onclick="addFlourRatio()">Add Flour</button>
+</div>
+</div></div>
+
+</form>
+</div>
+</div>
+
+<script>
+
+let recipeData = {};
+let qualityOptionCount = 1;
+let flourRatioCount = 0;
+
+const defaultQualityOptions = [
+{softness:0.02,roastStep:1,roastMaxStep:2,note:"Dry Cooked"},
+{softness:0.01,roastStep:1,roastMaxStep:2,note:"Slightly Uncooked"},
+{softness:-0.02,roastStep:1,roastMaxStep:2,note:"Uncooked/folded"},
+{softness:-0.01,roastStep:1,roastMaxStep:2,note:"Pinched"}
+];
+
+const defaultFlourRatios = {
+"Default":[0.76,0.76,0.76],
+"Ghar ka Atta":[0.68,0.68,0.68],
+"Aashirvaad MP":[0.69,0.69,0.69],
+"Aashirvaad Select":[0.70,0.70,0.70],
+"Pillsbury Gold":[0.71,0.71,0.71],
+"Pillsbury Chakki Fresh":[0.72,0.72,0.72],
+"Pillsbury Sujata":[0.73,0.73,0.73],
+"Pillsbury Sujata Gold":[0.68,0.68,0.68],
+"24 Mantra WWF":[0.68,0.68,0.68],
+"Grewal Chakki":[0.68,0.68,0.68],
+"Al Baker Chapatti":[0.68,0.68,0.68],
+"Al Baker Chakki Gold":[0.69,0.69,0.69],
+"Al Baker Chakki Fresh":[0.70,0.68,0.68],
+"Elephant Medium":[0.68,0.68,0.68]
+};
+
+function toggleSection(header){
+header.classList.toggle("collapsed");
+header.nextElementSibling.classList.toggle("collapsed");
+}
+
+function parseArray(val){
+if(!val) return [];
+return val.split(",").map(v=>parseFloat(v.trim())).filter(v=>!isNaN(v));
+}
+
+function addQualityOption(opt={softness:0,roastStep:1,roastMaxStep:2,note:""}){
+const d=document.createElement("div");
+d.className="nested-section";
+d.innerHTML=`
+<h4>Option ${qualityOptionCount}</h4>
+<div class="form-group"><label>Softness</label><input id="q${qualityOptionCount}_soft" value="${opt.softness}"></div>
+<div class="form-group"><label>Roast Step</label><input id="q${qualityOptionCount}_step" value="${opt.roastStep}"></div>
+<div class="form-group"><label>Roast Max</label><input id="q${qualityOptionCount}_max" value="${opt.roastMaxStep}"></div>
+<div class="form-group"><label>Note</label><input id="q${qualityOptionCount}_note" value="${opt.note}"></div>`;
+document.getElementById("qualityOptions").appendChild(d);
+qualityOptionCount++;
+}
+
+function addFlourRatio(name="",values=[0.76,0.76,0.76]){
+const d=document.createElement("div");
+d.className="nested-section";
+d.id=`flour${flourRatioCount}`;
+d.innerHTML=`
+<div class="form-group"><label>Name</label><input id="fname${flourRatioCount}" value="${name}"></div>
+<div class="form-group"><label>Ratios</label><input id="fval${flourRatioCount}" value="${values.join(",")}"></div>
+<button type="button" onclick="this.parentElement.remove()">Remove</button>`;
+document.getElementById("flourRatios").appendChild(d);
+flourRatioCount++;
+}
+
+function generateJSON(){
+const quality={};
+for(let i=1;i<qualityOptionCount;i++){
+if(document.getElementById(`q${i}_soft`)){
+quality[`option${i}`]={
+softness:parseFloat(q(`q${i}_soft`)),
+roastStep:parseInt(q(`q${i}_step`)),
+roastMaxStep:parseInt(q(`q${i}_max`)),
+note:q(`q${i}_note`)
+}}
+}
+
+const flour={};
+for(let i=0;i<flourRatioCount;i++){
+if(document.getElementById(`fname${i}`)){
+const name=q(`fname${i}`);
+if(name) flour[name]=parseArray(q(`fval${i}`));
+}
+}
+
+recipeData={
+recipeId:parseInt(q("recipeId")),
+recipeName:q("recipeName"),
+recipeVersion:q("recipeVersion"),
+description:q("description"),
+qualityControl:{quality},
+dispensing:{ratioWaterFlour:flour}
+};
+
+alert("JSON Generated");
+console.log(recipeData);
+}
+
+function downloadJSON(){
+if(!Object.keys(recipeData).length){alert("Generate JSON first");return;}
+const blob=new Blob([JSON.stringify(recipeData,null,4)],{type:"application/json"});
+const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download=recipeData.recipeName.replace(/\s+/g,"_")+".json";
+a.click();
+}
+
+function q(id){return document.getElementById(id).value;}
+
+window.onload=()=>{
+defaultQualityOptions.forEach(o=>addQualityOption(o));
+Object.entries(defaultFlourRatios).forEach(([n,v])=>addFlourRatio(n,v));
+};
+
+</script>
+</body>
+</html>

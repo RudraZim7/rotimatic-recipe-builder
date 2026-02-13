@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masala Poori Recipe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #f5f5f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: background 0.3s;
+        }
+
+        .section-header:hover {
+            background: #e8e8e8;
+        }
+
+        .section-header::after {
+            content: '▼';
+            transition: transform 0.3s;
+        }
+
+        .section-header.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .section-content.collapsed {
+            display: none;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .array-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .array-input input {
+            flex: 1;
+        }
+
+        .array-input button {
+            padding: 10px 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .array-input button:hover {
+            background: #5568d3;
+        }
+
+        .array-input button.remove {
+            background: #e74c3c;
+        }
+
+        .array-input button.remove:hover {
+            background: #c0392b;
+        }
+
+        .nested-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .nested-section h4 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding: 30px;
+            background: #f5f5f5;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .info-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <form id="recipeForm">
+                <!-- Basic Information -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Basic Information
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label for="recipeId">Recipe ID *</label>
+                            <input type="number" id="recipeId" name="recipeId" value="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipeName">Recipe Name *</label>
+                            <input type="text" id="recipeName" name="recipeName" value="Masala Poori" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipeVersion">Recipe Version *</label>
+                            <input type="text" id="recipeVersion" name="recipeVersion" value="1.4.6" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description">Released: wp  2025 September 18 , 08:40pm</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quality Control -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Quality Control
+                    </div>
+                    <div class="section-content">
+                        <div class="nested-section full-width">
+                            <h4>Quality Options</h4>
+                            <div id="qualityOptions">
+            <div class="nested-section">
+                <h4>Quality Option 1</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="form-group">
+                        <label>Softness</label>
+                        <input type="number" step="0.01" id="quality1_softness" value="0.02">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Step</label>
+                        <input type="number" id="quality1_roastStep" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Max Step</label>
+                        <input type="number" id="quality1_roastMaxStep" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" id="quality1_note" value="Dry Cooked">
+                    </div>
+                </div>
+            </div>
+            <div class="nested-section">
+                <h4>Quality Option 2</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="form-group">
+                        <label>Softness</label>
+                        <input type="number" step="0.01" id="quality2_softness" value="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Step</label>
+                        <input type="number" id="quality2_roastStep" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Max Step</label>
+                        <input type="number" id="quality2_roastMaxStep" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" id="quality2_note" value="Slightly Uncooked">
+                    </div>
+                </div>
+            </div>
+            <div class="nested-section">
+                <h4>Quality Option 3</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="form-group">
+                        <label>Softness</label>
+                        <input type="number" step="0.01" id="quality3_softness" value="-0.02">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Step</label>
+                        <input type="number" id="quality3_roastStep" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Max Step</label>
+                        <input type="number" id="quality3_roastMaxStep" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" id="quality3_note" value="Uncooked/folded">
+                    </div>
+                </div>
+            </div>
+            <div class="nested-section">
+                <h4>Quality Option 4</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="form-group">
+                        <label>Softness</label>
+                        <input type="number" step="0.01" id="quality4_softness" value="-0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Step</label>
+                        <input type="number" id="quality4_roastStep" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Max Step</label>
+                        <input type="number" id="quality4_roastMaxStep" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" id="quality4_note" value="Pinched">
+                    </div>
+                </div>
+            </div></div>
+                            <button type="button" onclick="addQualityOption()" style="margin-top: 10px; padding: 8px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Add Quality Option</button>
+                        </div>
+                        <div class="nested-section full-width">
+                            <h4>Size</h4>
+                            <div class="form-group">
+                                <label>Option 1</label>
+                                <input type="number" step="0.01" id="sizeOption1" value="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Option 2</label>
+                                <input type="number" step="0.01" id="sizeOption2" value="-0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Up Limit</label>
+                                <input type="number" step="0.01" id="sizeUpLimit" value="0.4">
+                            </div>
+                            <div class="form-group">
+                                <label>Down Limit</label>
+                                <input type="number" step="0.01" id="sizeDownLimit" value="-0.4">
+                            </div>
+                        </div>
+                        <div class="nested-section full-width">
+                            <h4>Softness</h4>
+                            <div class="form-group">
+                                <label>Option 1</label>
+                                <input type="number" step="0.01" id="softnessOption1" value="-0.08">
+                            </div>
+                            <div class="form-group">
+                                <label>Option 2</label>
+                                <input type="number" step="0.01" id="softnessOption2" value="-0.05">
+                            </div>
+                            <div class="form-group">
+                                <label>Option 3</label>
+                                <input type="number" step="0.01" id="softnessOption3" value="-0.02">
+                            </div>
+                            <div class="form-group">
+                                <label>Option 4</label>
+                                <input type="number" step="0.01" id="softnessOption4" value="0.08">
+                            </div>
+                            <div class="form-group">
+                                <label>Option 5</label>
+                                <input type="number" step="0.01" id="softnessOption5" value="0.03">
+                            </div>
+                            <div class="form-group">
+                                <label>Up Limit</label>
+                                <input type="number" step="0.01" id="softnessUpLimit" value="0.08">
+                            </div>
+                            <div class="form-group">
+                                <label>Down Limit</label>
+                                <input type="number" step="0.01" id="softnessDownLimit" value="-0.08">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="nested-section full-width">
+                            <h4>Roast Level</h4>
+                            <div class="form-group">
+                                <label>Step</label>
+                                <input type="number" id="roastStep" value="10">
+                            </div>
+                            <div class="form-group">
+                                <label>Duration (comma-separated)</label>
+                                <input type="text" id="roastDuration" value="1200,1500,1700,1800,1900" placeholder="1200,1500,1700,1800,1900">
+                                <span class="info-text">Enter numbers separated by commas</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Top Roast Temp (comma-separated)</label>
+                                <input type="text" id="topRoastTemp" value="0,0,0,0,0" placeholder="0,0,0,0,0">
+                            </div>
+                            <div class="form-group">
+                                <label>Bottom Roast Temp (comma-separated)</label>
+                                <input type="text" id="btmRoastTemp" value="0,0,0,0,0" placeholder="0,0,0,0,0">
+                            </div>
+                        </div>
+                        <div class="nested-section full-width">
+                            <h4>Oil Level</h4>
+                            <div class="form-group">
+                                <label>Oil Level (comma-separated)</label>
+                                <input type="text" id="oilLevel" value="0.1,0.2,0.3" placeholder="0.01,0.01,0.01">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thickness Settings -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Thickness Settings (Advanced)
+                    </div>
+                    <div class="section-content">
+                        <div class="nested-section full-width">
+                            <h4>Heating Temperatures</h4>
+                            <p class="info-text">Enter comma-separated values for [small, medium, large] sizes</p>
+                            <div class="form-group">
+                                <label>Top Temperature</label>
+                                <input type="text" id="heatingTopTemp" value="135,135,135">
+                            </div>
+                            <div class="form-group">
+                                <label>Bottom Temperature</label>
+                                <input type="text" id="heatingBottomTemp" value="135,135,135">
+                            </div>
+                            <div class="form-group">
+                                <label>Top Roast Temperature</label>
+                                <input type="text" id="heatingTopRoastTemp" value="70,70,70">
+                            </div>
+                            <div class="form-group">
+                                <label>Bottom Roast Temperature</label>
+                                <input type="text" id="heatingBottomRoastTemp" value="120,120,120">
+                            </div>
+                        </div>
+                        <div class="nested-section full-width">
+                            <h4>Heating Tolerances</h4>
+                            <div class="form-group">
+                                <label>Top Tolerance</label>
+                                <input type="text" id="heatingTopTolerance" value="3,3,3">
+                            </div>
+                            <div class="form-group">
+                                <label>Bottom Tolerance</label>
+                                <input type="text" id="heatingBottomTolerance" value="5,5,5">
+                            </div>
+                            <div class="form-group">
+                                <label>Top Roast Tolerance</label>
+                                <input type="text" id="heatingTopRoastTolerance" value="10,10,10">
+                            </div>
+                            <div class="form-group">
+                                <label>Bottom Roast Tolerance</label>
+                                <input type="text" id="heatingBottomRoastTolerance" value="10,10,10">
+                            </div>
+                        </div>
+                        <div class="nested-section full-width">
+                            <h4>Warm Tolerances</h4>
+                            <div class="form-group">
+                                <label>Top Warm Tolerance</label>
+                                <input type="text" id="warmTopTolerance" value="5,5,5">
+                            </div>
+                            <div class="form-group">
+                                <label>Bottom Warm Tolerance</label>
+                                <input type="text" id="warmBottomTolerance" value="15,15,15">
+                            </div>
+                            <div class="form-group">
+                                <label>Top Roast Warm Tolerance</label>
+                                <input type="text" id="warmTopRoastTolerance" value="25,25,25">
+                            </div>
+                            <div class="form-group">
+                                <label>Bottom Roast Warm Tolerance</label>
+                                <input type="text" id="warmBottomRoastTolerance" value="15,15,15">
+                            </div>
+                        </div>
+                        <div class="nested-section full-width">
+                            <h4>Dispensing Weights</h4>
+                            <div class="form-group">
+                                <label>DB Weight</label>
+                                <input type="text" id="dispensingDB" value="32,38,45">
+                            </div>
+                            <div class="form-group">
+                                <label>Oil Weight</label>
+                                <input type="text" id="dispensingOil" value="0.6,1.3,0.2">
+                            </div>
+                            <div class="form-group">
+                                <label>Flour Tolerance (comma-separated)</label>
+                                <input type="text" id="dispensingToleranceFlour" value="0.5,0.5,0.5" placeholder="0.5,0.5,0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Water Tolerance (comma-separated)</label>
+                                <input type="text" id="dispensingToleranceWater" value="0.4,0.4,0.4" placeholder="0.4,0.4,0.4">
+                            </div>
+                            <div class="form-group">
+                                <label>Oil Tolerance (comma-separated)</label>
+                                <input type="text" id="dispensingToleranceOil" value="0.3,0.3,0.3" placeholder="0.2,0.2,0.2">
+                            </div>
+                            <div class="form-group">
+                                <label>Ratio Water Flour Tolerance (comma-separated)</label>
+                                <input type="text" id="dispensingToleranceRatioWaterFlour" value="0.02,0.02,0.02" placeholder="0.02,0.02,0.02">
+                            </div>
+                        </div>
+                        <div class="nested-section full-width">
+                            <h4>Ratio Water Flour (Flour Types)</h4>
+                            <div id="flourRatios">
+            <div class="nested-section" id="flourRatio0">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour0_name" value="Default" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour0_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(0)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio1">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour1_name" value="Al Baker Chapatti" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour1_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(1)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio2">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour2_name" value="Al Baker Chakki Gold" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour2_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(2)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio3">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour3_name" value="Al Baker Chakki Fresh" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour3_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(3)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio4">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour4_name" value="Pillsbury Gold" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour4_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(4)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio5">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour5_name" value="Pillsbury Chakki Fresh" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour5_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(5)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio6">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour6_name" value="Elephant Medium" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour6_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(6)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio7">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour7_name" value="Grewal Chakki" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour7_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(7)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio8">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour8_name" value="Aashirvaad MP" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour8_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(8)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio9">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour9_name" value="Aashirvaad Select" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour9_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(9)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio10">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour10_name" value="Ghar ka Atta (Beta)" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour10_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(10)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio11">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour11_name" value="Pillsbury Sujata" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour11_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(11)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio12">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour12_name" value="Pillsbury Sujata Gold" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour12_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(12)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div>
+            <div class="nested-section" id="flourRatio13">
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour13_name" value="24 Mantra WWF" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour13_values" value="0.65,0.65,0.65" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(13)" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            </div></div>
+                            <button type="button" onclick="addFlourRatio()" style="margin-top: 10px; padding: 8px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Add Flour Type</button>
+                        </div>
+                        <div class="nested-section full-width">
+                            <h4>Adaptive DAK</h4>
+                            <div class="form-group">
+                                <label>Hardness (comma-separated)</label>
+                                <input type="text" id="adaptiveDAKHardness" value="250,550,810" placeholder="230,240,370">
+                            </div>
+                            <div class="form-group">
+                                <label>Tolerance (comma-separated)</label>
+                                <input type="text" id="adaptiveDAKTolerance" value="25,25,810" placeholder="10,10,10">
+                            </div>
+                            <div class="form-group">
+                                <label>Slurry Range (comma-separated)</label>
+                                <input type="text" id="adaptiveDAKSlurryRange" value="180,150,150" placeholder="150,150,160">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mixing -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Mixing
+                    </div>
+                    <div class="section-content">
+                        <div id="mixingSteps"><div class="nested-section" id="mixingStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="mixing_0_vtPosition" value="8,8,8"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="mixing_0_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="mixing_0_knSpeed" value="8,8,8"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="mixing_0_knDuration" value="2000,2000,2000"></div></div></div><div class="nested-section" id="mixingStep1"><h4>Step 1</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="mixing_1_vtPosition" value="4,4,4"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="mixing_1_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="mixing_1_knSpeed" value="10,10,10"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="mixing_1_knDuration" value="2000,2000,2000"></div></div></div><div class="nested-section" id="mixingStep2"><h4>Step 2</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="mixing_2_vtPosition" value="2,2,2"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="mixing_2_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="mixing_2_knSpeed" value="15,15,15"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="mixing_2_knDuration" value="6000,6000,6000"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Doughing -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Doughing
+                    </div>
+                    <div class="section-content">
+                        <div id="doughingSteps"><div class="nested-section" id="doughingStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="doughing_0_vtPosition" value="2,2,2"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="doughing_0_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="doughing_0_knSpeed" value="12,12,12"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="doughing_0_knDuration" value="3000,3000,3000"></div></div></div><div class="nested-section" id="doughingStep1"><h4>Step 1</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="doughing_1_vtPosition" value="4,4,4"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="doughing_1_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="doughing_1_knSpeed" value="10,10,10"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="doughing_1_knDuration" value="8000,8000,8000"></div></div></div><div class="nested-section" id="doughingStep2"><h4>Step 2</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="doughing_2_vtPosition" value="2,2,5"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="doughing_2_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="doughing_2_knSpeed" value="12,12,12"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="doughing_2_knDuration" value="4000,2000,4000"></div></div></div><div class="nested-section" id="doughingStep3"><h4>Step 3</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="doughing_3_vtPosition" value="4,4,8"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="doughing_3_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="doughing_3_knSpeed" value="10,10,10"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="doughing_3_knDuration" value="9000,11000,15000"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Stabilizing -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Stabilizing
+                    </div>
+                    <div class="section-content">
+                        <div id="stabilizingSteps"><div class="nested-section" id="stabilizingStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="stabilizing_0_vtPosition" value="10,10,10"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="stabilizing_0_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="stabilizing_0_knSpeed" value="20,20,20"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="stabilizing_0_knDuration" value="10000,10000,10000"></div></div></div><div class="nested-section" id="stabilizingStep1"><h4>Step 1</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="stabilizing_1_vtPosition" value="12,12,12"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="stabilizing_1_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="stabilizing_1_knSpeed" value="25,25,25"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="stabilizing_1_knDuration" value="9000,9000,9000"></div></div></div><div class="nested-section" id="stabilizingStep2"><h4>Step 2</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="stabilizing_2_vtPosition" value="18,18,18"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="stabilizing_2_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="stabilizing_2_knSpeed" value="30,30,30"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="stabilizing_2_knDuration" value="10000,11000,11000"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Rounding -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Rounding
+                    </div>
+                    <div class="section-content">
+                        <div id="roundingSteps"><div class="nested-section" id="roundingStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="rounding_0_vtPosition" value="20,20,24"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="rounding_0_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="rounding_0_knSpeed" value="35,35,35"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="rounding_0_knDuration" value="6000,6000,6000"></div></div></div><div class="nested-section" id="roundingStep1"><h4>Step 1</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="rounding_1_vtPosition" value="26,26,28"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="rounding_1_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="rounding_1_knSpeed" value="35,35,35"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="rounding_1_knDuration" value="5000,5000,5000"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Traction Loss Correction -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Traction Loss Correction
+                    </div>
+                    <div class="section-content">
+                        <div id="tractionlosscorrectionSteps"><div class="nested-section" id="tractionlosscorrectionStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="tractionlosscorrection_0_vtPosition" value="4,4,4"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="tractionlosscorrection_0_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="tractionlosscorrection_0_knSpeed" value="30,30,30"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="tractionlosscorrection_0_knDuration" value="3000,3000,3000"></div></div></div><div class="nested-section" id="tractionlosscorrectionStep1"><h4>Step 1</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="tractionlosscorrection_1_vtPosition" value="5,5,5"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="tractionlosscorrection_1_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="tractionlosscorrection_1_knSpeed" value="35,35,35"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="tractionlosscorrection_1_knDuration" value="8000,8000,8000"></div></div></div><div class="nested-section" id="tractionlosscorrectionStep2"><h4>Step 2</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="tractionlosscorrection_2_vtPosition" value="4,4,4"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="tractionlosscorrection_2_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="tractionlosscorrection_2_knSpeed" value="35,35,35"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="tractionlosscorrection_2_knDuration" value="4000,2000,4000"></div></div></div><div class="nested-section" id="tractionlosscorrectionStep3"><h4>Step 3</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="tractionlosscorrection_3_vtPosition" value="5,5,5"></div><div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="tractionlosscorrection_3_vtSpeed" value="40,40,40"></div><div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="tractionlosscorrection_3_knSpeed" value="35,35,35"></div><div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="tractionlosscorrection_3_knDuration" value="9000,11000,15000"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Dropping -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Dropping
+                    </div>
+                    <div class="section-content">
+                        <p class="info-text">Dropping section is empty (no configuration needed)</p>
+                    </div>
+                </div>
+
+                <!-- Transferring -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Transferring
+                    </div>
+                    <div class="section-content">
+                        <div id="transferringSteps"><div class="nested-section" id="transferringStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_0_module" value="kr"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_0_command" value="move"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_0_position" value="51,48,46"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_0_speed" value="100,100,100"></div></div></div><div class="nested-section" id="transferringStep1"><h4>Step 1</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_1_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_1_command" value="movefrombottom"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_1_position" value="33,33,33"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_1_speed" value="20,20,20"></div></div></div><div class="nested-section" id="transferringStep2"><h4>Step 2</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_2_module" value="kr"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_2_command" value="move"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_2_position" value="19.6,19.6,19.6"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_2_speed" value="50,50,50"></div></div></div><div class="nested-section" id="transferringStep3"><h4>Step 3</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_3_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_3_command" value="movefromtop"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_3_position" value="0,0,0"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_3_speed" value="30,30,30"></div></div></div><div class="nested-section" id="transferringStep4"><h4>Step 4</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_4_module" value="kr"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_4_command" value="findhome"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_4_position" value="0,0,0"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_4_speed" value="100,100,100"></div></div></div><div class="nested-section" id="transferringStep5"><h4>Step 5</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_5_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_5_command" value="adaptive"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_5_position" value="22,22,22"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_5_speed" value="20,20,20"></div></div></div><div class="nested-section" id="transferringStep6"><h4>Step 6</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_6_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_6_command" value="movefromtop"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_6_position" value="0,0,0"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_6_speed" value="30,30,30"></div></div></div><div class="nested-section" id="transferringStep7"><h4>Step 7</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_7_module" value="kr"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_7_command" value="move"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_7_position" value="59.22,58.22,58.22"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_7_speed" value="80,80,80"></div></div></div><div class="nested-section" id="transferringStep8"><h4>Step 8</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="transferring_8_module" value="kr"></div><div class="form-group"><label>Command</label><input type="text" id="transferring_8_command" value="findhome"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="transferring_8_position" value="0,0,0"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="transferring_8_speed" value="100,100,100"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Pressing -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Pressing
+                    </div>
+                    <div class="section-content">
+                        <div id="pressingSteps"><div class="nested-section" id="pressingStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="pressing_0_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="pressing_0_command" value="run"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="pressing_0_speed" value="20,20,20"></div><div class="form-group"><label>Duration (comma-separated)</label><input type="text" id="pressing_0_duration" value="50,50,100"></div><div class="form-group"><label>Current (comma-separated)</label><input type="text" id="pressing_0_current" value="9.0,9.0,7.5"></div><div class="form-group"><label>Tolerance (comma-separated)</label><input type="text" id="pressing_0_tolerance" value="1.0,1.0,1.0"></div><div class="form-group"><label>Hold Time (comma-separated)</label><input type="text" id="pressing_0_holdTime" value="800,1400,0"></div><div class="form-group"><label>Up Position (comma-separated)</label><input type="text" id="pressing_0_upPosition" value="45.35,45.35,45.35"></div><div class="form-group"><label>Up Speed (comma-separated)</label><input type="text" id="pressing_0_upSpeed" value="25,25,25"></div></div></div><div class="nested-section" id="pressingStep1"><h4>Step 1</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="pressing_1_module" value="timer"></div><div class="form-group"><label>Command</label><input type="text" id="pressing_1_command" value="wait"></div><div class="form-group"><label>Duration (comma-separated)</label><input type="text" id="pressing_1_duration" value="500,500,500"></div></div></div><div class="nested-section" id="pressingStep2"><h4>Step 2</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="pressing_2_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="pressing_2_command" value="movefromtop"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="pressing_2_position" value="45.35,45.35,45.35"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="pressing_2_speed" value="25,25,25"></div></div></div><div class="nested-section" id="pressingStep3"><h4>Step 3</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="pressing_3_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="pressing_3_command" value="movefromtop"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="pressing_3_position" value="0,0,0"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="pressing_3_speed" value="20,20,20"></div></div></div><div class="nested-section" id="pressingStep4"><h4>Step 4</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="pressing_4_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="pressing_4_command" value="findhome"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="pressing_4_position" value="0,0,0"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="pressing_4_speed" value="20,20,20"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Roasting -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Roasting
+                    </div>
+                    <div class="section-content">
+                        <div id="roastingSteps"><div class="nested-section" id="roastingStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="roasting_0_module" value="wp"></div><div class="form-group"><label>Command</label><input type="text" id="roasting_0_command" value="findhome"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="roasting_0_position" value="0,0,0"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="roasting_0_speed" value="20,20,20"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Kicking -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Kicking
+                    </div>
+                    <div class="section-content">
+                        <div id="kickingSteps"><div class="nested-section" id="kickingStep0"><h4>Step 0</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;"><div class="form-group"><label>Module</label><input type="text" id="kicking_0_module" value="kr"></div><div class="form-group"><label>Command</label><input type="text" id="kicking_0_command" value="move"></div><div class="form-group"><label>Position (comma-separated)</label><input type="text" id="kicking_0_position" value="306,306,306"></div><div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="kicking_0_speed" value="50,50,50"></div></div></div></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let recipeData = {};
+        let qualityOptionCount = 5;
+        let flourRatioCount = 14;
+
+        // Initialize default quality options
+        const defaultQualityOptions = [
+            { softness: 0.02, roastStep: 1, roastMaxStep: 2, note: "Dry Cooked" },
+            { softness: 0.01, roastStep: 1, roastMaxStep: 2, note: "Slightly Uncooked" },
+            { softness: -0.02, roastStep: 1, roastMaxStep: 2, note: "Uncooked/folded" },
+            { softness: -0.01, roastStep: 1, roastMaxStep: 2, note: "Pinched" }
+        ];
+
+        const defaultFlourRatios = {
+            "Default": [0.69, 0.69, 0.69],
+            "Ghar ka Atta": [0.68, 0.68, 0.68],
+            "Aashirvaad MP": [0.69, 0.69, 0.69],
+            "Aashirvaad Select": [0.70, 0.70, 0.70],
+            "Pillsbury Gold": [0.71, 0.71, 0.71],
+            "Pillsbury Chakki Fresh": [0.72, 0.72, 0.72],
+            "Pillsbury Sujata": [0.73, 0.73, 0.73],
+            "Pillsbury Sujata Gold": [0.68, 0.68, 0.68],
+            "24 Mantra WWF": [0.68, 0.68, 0.68],
+            "Grewal Chakki": [0.68, 0.68, 0.68],
+            "Al Baker Chapatti": [0.68, 0.68, 0.68],
+            "Al Baker Chakki Gold": [0.69, 0.69, 0.69],
+            "Al Baker Chakki Fresh": [0.70, 0.68, 0.68],
+            "Elephant Medium": [0.68, 0.68, 0.68]
+        };
+
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            header.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+        }
+
+        function parseArrayInput(value) {
+            if (!value) return [];
+            return value.split(',').map(v => {
+                const num = parseFloat(v.trim());
+                return isNaN(num) ? 0 : num;
+            });
+        }
+
+        function addQualityOption(option = null) {
+            const container = document.getElementById('qualityOptions');
+            const div = document.createElement('div');
+            div.className = 'nested-section';
+            div.id = `qualityOption${qualityOptionCount}`;
+            
+            const optionData = option || defaultQualityOptions[qualityOptionCount - 1] || { softness: 0, roastStep: 1, roastMaxStep: 2, note: "" };
+            
+            div.innerHTML = `
+                <h4>Quality Option ${qualityOptionCount}</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="form-group">
+                        <label>Softness</label>
+                        <input type="number" step="0.01" id="quality${qualityOptionCount}_softness" value="${optionData.softness}">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Step</label>
+                        <input type="number" id="quality${qualityOptionCount}_roastStep" value="${optionData.roastStep}">
+                    </div>
+                    <div class="form-group">
+                        <label>Roast Max Step</label>
+                        <input type="number" id="quality${qualityOptionCount}_roastMaxStep" value="${optionData.roastMaxStep}">
+                    </div>
+                    <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" id="quality${qualityOptionCount}_note" value="${optionData.note}">
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            qualityOptionCount++;
+        }
+
+
+        function addFlourRatio(name = "", values = [0.69, 0.69, 0.69]) {
+            const container = document.getElementById('flourRatios');
+            const div = document.createElement('div');
+            div.className = 'nested-section';
+            div.id = `flourRatio${flourRatioCount}`;
+            
+            div.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; align-items: end;">
+                    <div class="form-group">
+                        <label>Flour Name</label>
+                        <input type="text" id="flour${flourRatioCount}_name" value="${name}" placeholder="e.g., Default">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratios (comma-separated)</label>
+                        <input type="text" id="flour${flourRatioCount}_values" value="${values.join(',')}" placeholder="0.69,0.69,0.69">
+                    </div>
+                    <button type="button" onclick="removeFlourRatio(${flourRatioCount})" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; height: fit-content;">Remove</button>
+                </div>
+            `;
+            container.appendChild(div);
+            flourRatioCount++;
+        }
+
+        function removeFlourRatio(id) {
+            const element = document.getElementById(`flourRatio${id}`);
+            if (element) element.remove();
+        }
+
+        function generateJSON() {
+            // Basic info
+            const recipeId = parseInt(document.getElementById('recipeId').value);
+            const recipeName = document.getElementById('recipeName').value;
+            const recipeVersion = document.getElementById('recipeVersion').value;
+            const description = document.getElementById('description').value;
+
+            // Quality Control
+            const quality = {};
+            for (let i = 1; i < qualityOptionCount; i++) {
+                const softnessEl = document.getElementById(`quality${i}_softness`);
+                if (softnessEl && softnessEl.parentElement.parentElement.parentElement.parentElement) {
+                    quality[`option${i}`] = {
+                        softness: parseFloat(softnessEl.value) || 0,
+                        roastStep: parseInt(document.getElementById(`quality${i}_roastStep`).value) || 1,
+                        roastMaxStep: parseInt(document.getElementById(`quality${i}_roastMaxStep`).value) || 2,
+                        note: document.getElementById(`quality${i}_note`).value || ""
+                    };
+                }
+            }
+
+            const size = {
+                option1: parseFloat(document.getElementById('sizeOption1').value) || 0,
+                option2: parseFloat(document.getElementById('sizeOption2').value) || 0,
+                upLimit: parseFloat(document.getElementById('sizeUpLimit').value) || 0,
+                downLimit: parseFloat(document.getElementById('sizeDownLimit').value) || 0
+            };
+
+            const softness = {
+                option1: parseFloat(document.getElementById('softnessOption1').value) || 0,
+                option2: parseFloat(document.getElementById('softnessOption2').value) || 0,
+                option3: parseFloat(document.getElementById('softnessOption3').value) || 0,
+                option4: parseFloat(document.getElementById('softnessOption4').value) || 0,
+                option5: parseFloat(document.getElementById('softnessOption5').value) || 0,
+                upLimit: parseFloat(document.getElementById('softnessUpLimit').value) || 0,
+                downLimit: parseFloat(document.getElementById('softnessDownLimit').value) || 0
+            };
+
+            // Settings
+            const roastLevel = {
+                step: parseInt(document.getElementById('roastStep').value) || 9,
+                duration: parseArrayInput(document.getElementById('roastDuration').value),
+                topRoastTemp: parseArrayInput(document.getElementById('topRoastTemp').value),
+                btmRoastTemp: parseArrayInput(document.getElementById('btmRoastTemp').value)
+            };
+
+            const oilLevel = parseArrayInput(document.getElementById('oilLevel').value);
+
+            // Thickness - Heating
+            const heating = {
+                temperature: {
+                    top: parseArrayInput(document.getElementById('heatingTopTemp').value),
+                    bottom: parseArrayInput(document.getElementById('heatingBottomTemp').value),
+                    topRoast: parseArrayInput(document.getElementById('heatingTopRoastTemp').value),
+                    bottomRoast: parseArrayInput(document.getElementById('heatingBottomRoastTemp').value)
+                },
+                tolerance: {
+                    top: parseArrayInput(document.getElementById('heatingTopTolerance').value),
+                    bottom: parseArrayInput(document.getElementById('heatingBottomTolerance').value),
+                    topRoast: parseArrayInput(document.getElementById('heatingTopRoastTolerance').value),
+                    bottomRoast: parseArrayInput(document.getElementById('heatingBottomRoastTolerance').value)
+                },
+                warmTolerance: {
+                    top: parseArrayInput(document.getElementById('warmTopTolerance').value),
+                    bottom: parseArrayInput(document.getElementById('warmBottomTolerance').value),
+                    topRoast: parseArrayInput(document.getElementById('warmTopRoastTolerance').value),
+                    bottomRoast: parseArrayInput(document.getElementById('warmBottomRoastTolerance').value)
+                }
+            };
+
+            // Dispensing
+            const dispensing = {
+                weight: {
+                    db: parseArrayInput(document.getElementById('dispensingDB').value),
+                    oil: parseArrayInput(document.getElementById('dispensingOil').value),
+                    ratioWaterFlour: {}
+                },
+                tolerance: {
+                    flour: parseArrayInput(document.getElementById('dispensingToleranceFlour').value),
+                    water: parseArrayInput(document.getElementById('dispensingToleranceWater').value),
+                    oil: parseArrayInput(document.getElementById('dispensingToleranceOil').value),
+                    ratioWaterFlour: parseArrayInput(document.getElementById('dispensingToleranceRatioWaterFlour').value)
+                }
+            };
+
+            // Flour ratios
+            for (let i = 0; i < flourRatioCount; i++) {
+                const nameEl = document.getElementById(`flour${i}_name`);
+                const valuesEl = document.getElementById(`flour${i}_values`);
+                if (nameEl && valuesEl && nameEl.parentElement.parentElement.parentElement) {
+                    const name = nameEl.value.trim();
+                    if (name) {
+                        dispensing.weight.ratioWaterFlour[name] = parseArrayInput(valuesEl.value);
+                    }
+                }
+            }
+
+            // Build final JSON
+            recipeData = {
+                recipeId: recipeId,
+                recipeName: recipeName,
+                recipeVersion: recipeVersion,
+                description: description,
+                qualityControl: {
+                    quality: quality,
+                    size: size,
+                    softness: softness
+                },
+                settings: {
+                    roastLevel: roastLevel,
+                    oilLevel: oilLevel,
+                    thickness: {
+                        heating: heating,
+                        dispensing: dispensing,
+                        adaptiveDAK: {
+                            hardness: parseArrayInput(document.getElementById('adaptiveDAKHardness').value),
+                            tolerance: parseArrayInput(document.getElementById('adaptiveDAKTolerance').value),
+                            slurryRange: parseArrayInput(document.getElementById('adaptiveDAKSlurryRange').value)
+                        },
+                        mixing: (function() {
+                            const mixing = {};
+                            for (let i = 0; i <= 2; i++) {
+                                const step = readStepData('mixing', i);
+                                if (step) mixing[`step${i}`] = step;
+                            }
+                            return mixing;
+                        })(),
+                        doughing: (function() {
+                            const doughing = {};
+                            for (let i = 0; i <= 3; i++) {
+                                const step = readStepData('doughing', i);
+                                if (step) doughing[`step${i}`] = step;
+                            }
+                            return doughing;
+                        })(),
+                        stabilizing: (function() {
+                            const stabilizing = {};
+                            for (let i = 0; i <= 2; i++) {
+                                const step = readStepData('stabilizing', i);
+                                if (step) stabilizing[`step${i}`] = step;
+                            }
+                            return stabilizing;
+                        })(),
+                        rounding: (function() {
+                            const rounding = {};
+                            for (let i = 0; i <= 1; i++) {
+                                const step = readStepData('rounding', i);
+                                if (step) rounding[`step${i}`] = step;
+                            }
+                            return rounding;
+                        })(),
+                        tractionlosscorrection: (function() {
+                            const tractionlosscorrection = {};
+                            for (let i = 0; i <= 3; i++) {
+                                const step = readStepData('tractionlosscorrection', i);
+                                if (step) tractionlosscorrection[`step${i}`] = step;
+                            }
+                            return tractionlosscorrection;
+                        })(),
+                        dropping: {},
+                        transferring: (function() {
+                            const transferring = {};
+                            for (let i = 0; i <= 9; i++) {
+                                const step = readStepData('transferring', i);
+                                if (step) transferring[`step${i}`] = step;
+                            }
+                            return transferring;
+                        })(),
+                        pressing: (function() {
+                            const pressing = {};
+                            for (let i = 0; i <= 2; i++) {
+                                const step = readStepData('pressing', i);
+                                if (step) pressing[`step${i}`] = step;
+                            }
+                            return pressing;
+                        })(),
+                        roasting: (function() {
+                            const roasting = {};
+                            for (let i = 0; i <= 12; i++) {
+                                const step = readStepData('roasting', i);
+                                if (step) roasting[`step${i}`] = step;
+                            }
+                            return roasting;
+                        })(),
+                        kicking: (function() {
+                            const kicking = {};
+                            const step = readStepData('kicking', 0);
+                            if (step) kicking['step0'] = step;
+                            return kicking;
+                        })()
+                    }
+                }
+            };
+
+            alert('JSON generated successfully! Click "Download JSON" to save the file.');
+        }
+
+        function downloadJSON() {
+            if (Object.keys(recipeData).length === 0) {
+                alert('Please generate JSON first!');
+                return;
+            }
+
+            const jsonString = JSON.stringify(recipeData, null, 4);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${recipeData.recipeName.replace(/\s+/g, '_')}_recipe.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+
+        // Helper function to create step form
+        function createStepForm(containerId, stepName, stepNum, stepData, stepType) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'nested-section';
+            div.id = `${stepName}Step${stepNum}`;
+            
+            let html = `<h4>Step ${stepNum}</h4><div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; align-items: start;">`;
+            
+            if (stepData.module) {
+                html += `<div class="form-group"><label>Module</label><input type="text" id="${stepName}_${stepNum}_module" value="${stepData.module}"></div>`;
+            }
+            if (stepData.command) {
+                html += `<div class="form-group"><label>Command</label><input type="text" id="${stepName}_${stepNum}_command" value="${stepData.command}"></div>`;
+            }
+            if (stepData.vtPosition) {
+                html += `<div class="form-group"><label>VT Position (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_vtPosition" value="${stepData.vtPosition.join(',')}"></div>`;
+            }
+            if (stepData.vtSpeed) {
+                html += `<div class="form-group"><label>VT Speed (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_vtSpeed" value="${stepData.vtSpeed.join(',')}"></div>`;
+            }
+            if (stepData.knSpeed) {
+                html += `<div class="form-group"><label>KN Speed (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_knSpeed" value="${stepData.knSpeed.join(',')}"></div>`;
+            }
+            if (stepData.knDuration) {
+                html += `<div class="form-group"><label>KN Duration (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_knDuration" value="${stepData.knDuration.join(',')}"></div>`;
+            }
+            if (stepData.position) {
+                html += `<div class="form-group"><label>Position (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_position" value="${stepData.position.join(',')}"></div>`;
+            }
+            if (stepData.speed) {
+                html += `<div class="form-group"><label>Speed (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_speed" value="${stepData.speed.join(',')}"></div>`;
+            }
+            if (stepData.duration) {
+                html += `<div class="form-group"><label>Duration (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_duration" value="${stepData.duration.join(',')}"></div>`;
+            }
+            if (stepData.current) {
+                html += `<div class="form-group"><label>Current (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_current" value="${stepData.current.join(',')}"></div>`;
+            }
+            if (stepData.tolerance) {
+                html += `<div class="form-group"><label>Tolerance (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_tolerance" value="${stepData.tolerance.join(',')}"></div>`;
+            }
+            if (stepData.holdTime) {
+                html += `<div class="form-group"><label>Hold Time (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_holdTime" value="${stepData.holdTime.join(',')}"></div>`;
+            }
+            if (stepData.upPosition) {
+                html += `<div class="form-group"><label>Up Position (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_upPosition" value="${stepData.upPosition.join(',')}"></div>`;
+            }
+            if (stepData.upSpeed) {
+                html += `<div class="form-group"><label>Up Speed (comma-separated)</label><input type="text" id="${stepName}_${stepNum}_upSpeed" value="${stepData.upSpeed.join(',')}"></div>`;
+            }
+            
+            html += `</div>`;
+            div.innerHTML = html;
+            container.appendChild(div);
+        }
+
+        // Initialize step sections
+        function initializeSteps() {
+            // Mixing steps
+            const mixingData = {
+                step0: { vtPosition: [8, 8, 8], vtSpeed: [40, 40, 40], knSpeed: [4, 4, 4], knDuration: [2000, 2000, 2000] },
+                step1: { vtPosition: [4, 4, 4], vtSpeed: [40, 40, 40], knSpeed: [8, 8, 8], knDuration: [2000, 2000, 2000] },
+                step2: { vtPosition: [2, 2, 2], vtSpeed: [40, 40, 40], knSpeed: [10, 10, 10], knDuration: [8000, 8000, 10000] }
+            };
+            Object.keys(mixingData).forEach(key => {
+                createStepForm('mixingSteps', 'mixing', key.replace('step', ''), mixingData[key], 'mixing');
+            });
+
+            // Doughing steps
+            const doughingData = {
+                step0: { vtPosition: [2, 2, 2], vtSpeed: [40, 40, 40], knSpeed: [15, 12, 12], knDuration: [15000, 12000, 12000] },
+                step1: { vtPosition: [4, 4, 4], vtSpeed: [40, 40, 40], knSpeed: [15, 10, 10], knDuration: [8000, 8000, 8000] },
+                step2: { vtPosition: [2, 2, 5], vtSpeed: [40, 40, 40], knSpeed: [15, 12, 12], knDuration: [8000, 8000, 8000] },
+                step3: { vtPosition: [4, 4, 8], vtSpeed: [40, 40, 40], knSpeed: [15, 10, 10], knDuration: [9000, 11000, 15000] }
+            };
+            Object.keys(doughingData).forEach(key => {
+                createStepForm('doughingSteps', 'doughing', key.replace('step', ''), doughingData[key], 'doughing');
+            });
+
+            // Stabilizing steps
+            const stabilizingData = {
+                step0: { vtPosition: [7, 10, 12], vtSpeed: [40, 40, 40], knSpeed: [20, 20, 20], knDuration: [6000, 8000, 11000] },
+                step1: { vtPosition: [10, 12, 15], vtSpeed: [40, 40, 40], knSpeed: [25, 25, 25], knDuration: [6000, 11000, 11000] },
+                step2: { vtPosition: [18, 18, 18], vtSpeed: [40, 40, 40], knSpeed: [30, 30, 30], knDuration: [6000, 6000, 6000] }
+            };
+            Object.keys(stabilizingData).forEach(key => {
+                createStepForm('stabilizingSteps', 'stabilizing', key.replace('step', ''), stabilizingData[key], 'stabilizing');
+            });
+
+            // Rounding steps
+            const roundingData = {
+                step0: { vtPosition: [18, 27, 30], vtSpeed: [40, 40, 40], knSpeed: [35, 35, 35], knDuration: [2000, 2000, 1000] },
+                step1: { vtPosition: [22, 31.5, 33], vtSpeed: [40, 40, 40], knSpeed: [30, 35, 35], knDuration: [2000, 2000, 1000] }
+            };
+            Object.keys(roundingData).forEach(key => {
+                createStepForm('roundingSteps', 'rounding', key.replace('step', ''), roundingData[key], 'rounding');
+            });
+
+            // Traction loss correction steps
+            const tractionData = {
+                step0: { vtPosition: [4, 4, 4], vtSpeed: [40, 40, 40], knSpeed: [30, 30, 30], knDuration: [3000, 3000, 3000] },
+                step1: { vtPosition: [5, 5, 5], vtSpeed: [40, 40, 40], knSpeed: [35, 35, 35], knDuration: [8000, 8000, 8000] },
+                step2: { vtPosition: [4, 4, 4], vtSpeed: [40, 40, 40], knSpeed: [35, 35, 35], knDuration: [4000, 4000, 4000] },
+                step3: { vtPosition: [5, 5, 5], vtSpeed: [40, 40, 40], knSpeed: [35, 35, 35], knDuration: [9000, 11000, 15000] }
+            };
+            Object.keys(tractionData).forEach(key => {
+                createStepForm('tractionlosscorrectionSteps', 'tractionlosscorrection', key.replace('step', ''), tractionData[key], 'tractionlosscorrection');
+            });
+
+            // Transferring steps
+            const transferringData = {
+                step0: { module: "kr", command: "move", position: [51, 51, 51], speed: [100, 100, 100] },
+                step1: { module: "wp", command: "movefrombottom", position: [33, 33, 33], speed: [20, 20, 20] },
+                step2: { module: "kr", command: "move", position: [19.6, 19.6, 19.6], speed: [50, 50, 50] },
+                step3: { module: "wp", command: "movefromtop", position: [0, 0, 0], speed: [30, 30, 30] },
+                step4: { module: "kr", command: "findhome", position: [0, 0, 0], speed: [100, 100, 100] },
+                step5: { module: "wp", command: "adaptive", position: [22, 22, 22], speed: [20, 20, 20] },
+                step6: { module: "wp", command: "movefromtop", position: [0, 0, 0], speed: [30, 30, 30] },
+                step7: { module: "kr", command: "move", position: [57.50, 58.50, 58.50], speed: [80, 80, 80] },
+                step8: { module: "kr", command: "move", position: [19.6, 19.6, 19.6], speed: [50, 50, 50] },
+                step9: { module: "kr", command: "findhome", position: [0, 0, 0], speed: [100, 100, 100] }
+            };
+            Object.keys(transferringData).forEach(key => {
+                createStepForm('transferringSteps', 'transferring', key.replace('step', ''), transferringData[key], 'transferring');
+            });
+
+            // Pressing steps
+            const pressingData = {
+                step0: { module: "wp", command: "run", speed: [20, 20, 20], current: [9.0, 9.0, 9.0], duration: [50, 50, 50], tolerance: [0.9, 0.9, 1.3], holdTime: [1200, 900, 800], upPosition: [45.35, 45.35, 45.35], upSpeed: [25, 25, 25] },
+                step1: { module: "timer", command: "wait", duration: [4000, 2000, 2000] },
+                step2: { module: "wp", command: "movefromtop", position: [0, 0, 0], speed: [20, 20, 20] }
+            };
+            Object.keys(pressingData).forEach(key => {
+                createStepForm('pressingSteps', 'pressing', key.replace('step', ''), pressingData[key], 'pressing');
+            });
+
+            // Roasting steps
+            const roastingData = {
+                step0: { module: "timer", command: "wait", duration: [3000, 2000, 2000] },
+                step1: { module: "kr", command: "move", position: [140, 140, 140], speed: [50, 50, 50] },
+                step2: { module: "kr", command: "move", position: [90, 90, 90], speed: [120, 120, 120] },
+                step3: { module: "kr", command: "move", position: [160, 160, 160], speed: [50, 50, 50] },
+                step4: { module: "kr", command: "move", position: [19.6, 19.6, 19.6], speed: [50, 50, 50] },
+                step5: { module: "kr", command: "findhome", position: [0, 0, 0], speed: [100, 100, 100] },
+                step6: { module: "wp", command: "movefrombottom", position: [19.40, 14, 18], speed: [10, 10, 10] },
+                step7: { module: "timer", command: "wait", duration: [15000, 15000, 6000] },
+                step8: { module: "wp", command: "movefrombottom", position: [5.00, 7.95, 9], speed: [10, 10, 10] },
+                step9: { module: "timer", command: "wait", duration: [6000, 6000, 16000] },
+                step10: { module: "wp", command: "movefrombottom", position: [2, 2, 2], speed: [16, 10, 10] },
+                step11: { module: "timer", command: "wait", duration: [7000, 7000, 9000] },
+                step12: { module: "wp", command: "movefromtop", position: [0, 0, 0], speed: [20, 20, 20] }
+            };
+            Object.keys(roastingData).forEach(key => {
+                createStepForm('roastingSteps', 'roasting', key.replace('step', ''), roastingData[key], 'roasting');
+            });
+
+            // Kicking steps
+            const kickingData = {
+                step0: { module: "kr", command: "move", position: [304.5, 304.5, 304.5], speed: [100, 100, 100] }
+            };
+            Object.keys(kickingData).forEach(key => {
+                createStepForm('kickingSteps', 'kicking', key.replace('step', ''), kickingData[key], 'kicking');
+            });
+        }
+
+        // Helper function to read step data from form
+        function readStepData(stepName, stepNum) {
+            const step = {};
+            const moduleEl = document.getElementById(`${stepName}_${stepNum}_module`);
+            const commandEl = document.getElementById(`${stepName}_${stepNum}_command`);
+            const vtPositionEl = document.getElementById(`${stepName}_${stepNum}_vtPosition`);
+            const vtSpeedEl = document.getElementById(`${stepName}_${stepNum}_vtSpeed`);
+            const knSpeedEl = document.getElementById(`${stepName}_${stepNum}_knSpeed`);
+            const knDurationEl = document.getElementById(`${stepName}_${stepNum}_knDuration`);
+            const positionEl = document.getElementById(`${stepName}_${stepNum}_position`);
+            const speedEl = document.getElementById(`${stepName}_${stepNum}_speed`);
+            const durationEl = document.getElementById(`${stepName}_${stepNum}_duration`);
+            const currentEl = document.getElementById(`${stepName}_${stepNum}_current`);
+            const toleranceEl = document.getElementById(`${stepName}_${stepNum}_tolerance`);
+            const holdTimeEl = document.getElementById(`${stepName}_${stepNum}_holdTime`);
+            const upPositionEl = document.getElementById(`${stepName}_${stepNum}_upPosition`);
+            const upSpeedEl = document.getElementById(`${stepName}_${stepNum}_upSpeed`);
+
+            if (moduleEl) step.module = moduleEl.value;
+            if (commandEl) step.command = commandEl.value;
+            if (vtPositionEl) step.vtPosition = parseArrayInput(vtPositionEl.value);
+            if (vtSpeedEl) step.vtSpeed = parseArrayInput(vtSpeedEl.value);
+            if (knSpeedEl) step.knSpeed = parseArrayInput(knSpeedEl.value);
+            if (knDurationEl) step.knDuration = parseArrayInput(knDurationEl.value);
+            if (positionEl) step.position = parseArrayInput(positionEl.value);
+            if (speedEl) step.speed = parseArrayInput(speedEl.value);
+            if (durationEl) step.duration = parseArrayInput(durationEl.value);
+            if (currentEl) step.current = parseArrayInput(currentEl.value);
+            if (toleranceEl) step.tolerance = parseArrayInput(toleranceEl.value);
+            if (holdTimeEl) step.holdTime = parseArrayInput(holdTimeEl.value);
+            if (upPositionEl) step.upPosition = parseArrayInput(upPositionEl.value);
+            if (upSpeedEl) step.upSpeed = parseArrayInput(upSpeedEl.value);
+
+            return Object.keys(step).length > 0 ? step : null;
+        }
+
+        // Form already initialized with recipe data
+
+    </script>
+</body>
+</html>

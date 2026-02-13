@@ -1,0 +1,392 @@
+{
+    "recipeId": 18,
+    "recipeName": "Tortilla Wraps",
+    "recipeVersion": "1.1.5",
+    "description": "Released: wp  2025 NOVEMBER 18 , 09:6pm",
+    "qualityControl": {
+        "quality":{
+            "option1":{
+                "softness": 0.02,
+                "roastStep":1,
+                "roastMaxStep": 2,
+                "note": "Dry Cooked"
+            },
+            "option2":{
+                "softness": 0.01,
+                "roastStep":1,
+                "roastMaxStep": 2,
+                "note":"Slightly Uncooked"
+            },
+            "option3":{
+                "softness": -0.02,
+                "roastStep":1,
+                "roastMaxStep": 2,
+                "note":"Uncooked/folded"
+            },
+            "option4":{
+                "softness": -0.01,
+                "roastStep":1,
+                "roastMaxStep": 2,
+                "note":"Pinched"
+            }
+        },
+        "size":{
+            "option1": 0.1,
+            "option2": -0.1,
+            "upLimit": 0.5,
+            "downLimit": -0.5
+        },
+        "softness":{
+            "option1": -0.08,
+            "option2": -0.05,
+            "option3": -0.02,
+            "option4": 0.08,
+            "option5": 0.03,
+            "upLimit": 0.15,
+            "downLimit": -0.15
+        }
+    },
+    "settings":{
+        "roastLevel":{
+            "step":9,
+            "duration":[1200,1500,1700,1800,1900] ,  
+            "topRoastTemp":[0,0,0,0,0],
+            "btmRoastTemp":[0,0,0,0,0]    
+        },
+        "oilLevel": [0.01, 0.01, 0.01],
+        "thickness":{
+            "heating": {
+                "temperature": {
+                    "top": [125, 125, 125],
+                    "bottom": [130, 130, 130],
+                    "topRoast": [240, 240, 240],
+                    "bottomRoast": [230, 230, 230]
+                },
+                "tolerance": {
+                    "top": [2, 2, 2],
+                    "bottom": [2, 2, 2],
+                    "topRoast": [5, 5, 5],
+                    "bottomRoast": [5, 5, 5]
+                },
+                "warmTolerance": {
+                    "top": [5, 5, 5],
+                    "bottom": [5, 5, 5],
+                    "topRoast": [15, 15, 15],
+                    "bottomRoast": [15, 15, 15]
+                }
+            },
+            "dispensing": {
+                "weight": {
+                    "db": [32.5, 35, 40],
+                    "oil": [1.5, 1.5, 2.5],
+                    "ratioWaterFlour":
+                    {
+                        "Default":[0.61, 0.61, 0.61],
+						"Ghar ka Atta":[0.68, 0.68, 0.68],
+						"Aashirvaad MP":[0.69, 0.69, 0.69],
+						"Aashirvaad Select":[0.70, 0.70, 0.70],
+						"Pillsbury Gold":[0.71, 0.71, 0.71],
+						"Pillsbury Chakki Fresh":[0.72, 0.72, 0.72],
+						"Pillsbury Sujata":[0.73, 0.73, 0.73],
+						"Pillsbury Sujata Gold":[0.68, 0.68, 0.68],
+						"24 Mantra WWF":[0.68, 0.68, 0.68],
+						"Grewal Chakki":[0.68, 0.68, 0.68],
+						"Al Baker Chapatti":[0.68, 0.68, 0.68],
+                        "Al Baker Chakki Gold":[0.69, 0.69, 0.69],
+                        "Al Baker Chakki Fresh":[0.70, 0.68, 0.68],
+                        "Elephant Medium":[0.68, 0.68, 0.68]                     
+                    }
+                },
+                "tolerance": {
+                    "flour": [0.5, 0.5, 0.5],
+                    "water": [0.4, 0.4, 0.4],
+                    "oil": [0.2, 0.2, 0.2],
+                    "ratioWaterFlour" : [0.02, 0.02, 0.02]
+                }
+            },
+            "adaptiveDAK":{
+                "hardness":[230,240,370],
+                "tolerance":[10,10,10],
+                "slurryRange":[150,150,160]
+            },
+            "mixing": {
+                "step0": {
+                    "vtPosition": [8, 8, 8],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [4, 4, 4],
+                    "knDuration": [2000, 2000, 2000]
+                },
+                "step1": {
+                    "vtPosition": [4, 4, 4],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [8, 8, 8],
+                    "knDuration": [2000, 2000, 2000]
+                },
+                "step2": {
+                    "vtPosition": [2, 2, 2],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [10, 10, 10],
+                    "knDuration": [8000, 8000, 10000]
+                }
+            },
+            "doughing":{
+                "step0": {
+                    "vtPosition": [2, 2, 2],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [15, 12, 12],
+                    "knDuration": [8000, 8000, 8000]
+                },
+                "step1": {
+                    "vtPosition": [4, 4, 4],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [15, 10, 10],
+                    "knDuration": [8000, 8000, 8000]
+                },
+                "step2": {
+                    "vtPosition": [3, 3, 5],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [15, 12, 12],
+                    "knDuration": [8000, 8000, 8000]
+                },
+                "step3": {
+                    "vtPosition": [4, 4, 8],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [15, 10, 10],
+                    "knDuration": [8000, 8000, 8000]
+                }
+            },
+            "stabilizing":{
+                "step0": {
+                    "vtPosition": [7, 10, 12],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [20, 20, 20],
+                    "knDuration": [6000, 8000, 11000]
+                },
+                "step1": {
+                    "vtPosition": [10, 12, 15],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [25, 25, 25],
+                    "knDuration": [6000, 11000, 11000]
+                },
+                "step2": {
+                    "vtPosition": [18, 18, 18],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [30, 30, 30],
+                    "knDuration": [6000, 6000, 6000]
+                }
+            },
+            "rounding":{
+                "step0": {
+                    "vtPosition": [18, 27, 30],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [35, 35, 35],
+                    "knDuration": [2000, 2000, 1000]
+                },
+                "step1": {
+                    "vtPosition": [22, 31.5, 33],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [30, 35, 35],
+                    "knDuration": [2000, 2000, 1000]
+                }
+            },
+            "tractionlosscorrection":{
+                "step0": {
+                    "vtPosition": [4, 4, 4],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [30, 30, 30],
+                    "knDuration": [3000, 3000, 3000]
+                },
+                "step1": {
+                    "vtPosition": [5, 5, 5],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [35, 35, 35],
+                    "knDuration": [8000, 8000, 8000]
+                },
+                "step2": {
+                    "vtPosition": [4, 4, 4],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [35, 35, 35],
+                    "knDuration": [4000, 4000, 4000]
+                },
+                "step3": {
+                    "vtPosition": [5, 5, 5],
+                    "vtSpeed": [40, 40, 40],
+                    "knSpeed": [35, 35, 35],
+                    "knDuration": [9000, 11000, 15000]
+                }
+            },
+            "dropping": {},
+            "transferring": {
+                "step0": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [51, 48, 46],
+                    "speed": [100, 100, 100]
+                },
+                "step1": {
+                    "module": "wp",
+                    "command": "movefrombottom",
+                    "position": [33, 33, 33],
+                    "speed": [20, 20, 20]
+                },
+                "step2": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [19.6, 19.6, 19.6],
+                    "speed": [50, 50, 50]
+                },
+                "step3": {
+                    "module": "wp",
+                    "command": "movefromtop",
+                    "position": [0, 0, 0],
+                    "speed": [30, 30, 30]
+                },
+                "step4": {
+                    "module": "kr",
+                    "command": "findhome",
+                    "position": [0, 0, 0],
+                    "speed": [100, 100, 100]
+                },
+                "step5": {
+                    "module": "wp",
+                    "command": "adaptive",
+                    "position": [22, 22, 22],
+                    "speed": [20, 20, 20]
+                },
+                "step6": {
+                    "module": "wp",
+                    "command": "movefromtop",
+                    "position": [0, 0, 0],
+                    "speed": [30, 30, 30]
+                },
+                "step7": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [57.50, 58.50, 58.50],
+                    "speed": [80, 80, 80]
+                },
+                "step8": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [19.6, 19.6, 19.6],
+                    "speed": [50, 50, 50]
+                },
+                "step9": {
+                    "module": "kr",
+                    "command": "findhome",
+                    "position": [0, 0, 0],
+                    "speed": [100, 100, 100]
+                }
+            },
+            "pressing": {
+                "step0": {
+                    "module": "wp",
+                    "command": "run",
+                    "speed": [20, 20, 20],
+                    "current": [9.0, 9.0, 9.0],
+                    "duration": [50, 50, 50],
+                    "tolerance": [0.9, 0.9, 1.3],
+                    "holdTime": [1000, 900, 800],
+                    "upPosition": [45.35, 45.35, 45.35],
+                    "upSpeed": [25, 25, 25]
+                },
+                "step1": {
+                    "module": "timer",
+                    "command": "wait",
+                    "duration": [10000, 10000, 10000]
+                },
+                "step2": {
+                    "module": "wp",
+                    "command": "movefromtop",
+                    "position": [0, 0, 0],
+                    "speed": [20, 20, 20]
+                }
+            },
+            "roasting": {
+                "step0": {
+                    "module": "timer",
+                    "command": "wait",
+                    "duration": [3000, 2000,2000]
+                },
+                "step1": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [140, 140, 140],
+                    "speed": [50, 50, 50]
+                },
+                "step2": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [90, 90, 90],
+                    "speed": [120, 120, 120]
+                },
+                "step3": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [160, 160, 160],
+                    "speed": [50, 50, 50]
+                },
+                "step4": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [19.6, 19.6, 19.6],
+                    "speed": [50, 50, 50]
+                },
+                "step5": {
+                    "module": "kr",
+                    "command": "findhome",
+                    "position": [0, 0, 0],
+                    "speed": [100, 100, 100]
+                },
+                "step6": {
+                    "module": "wp",
+                    "command": "movefrombottom",
+                    "position": [19.40, 14, 18],
+                    "speed": [10, 10, 10]
+                },
+                "step7": {
+                    "module": "timer",
+                    "command": "wait",
+                    "duration": [8000, 8000, 8000]
+                },
+                "step8": {
+                    "module": "wp",
+                    "command": "movefrombottom",
+                    "position": [5.00, 7.95, 9],
+                    "speed": [10, 10, 10]
+                },
+                "step9": {
+                    "module": "timer",
+                    "command": "wait",
+                    "duration": [6000, 6000, 16000]
+                },
+                "step10": {
+                    "module": "wp",
+                    "command": "movefrombottom",
+                    "position": [2, 2, 2],
+                    "speed": [16, 16, 16]
+                },
+                "step11": {
+                    "module": "timer",
+                    "command": "wait",
+                    "duration": [7000, 7000, 9000]
+                },
+                "step12": {
+                    "module": "wp",
+                    "command": "movefromtop",
+                    "position": [0, 0, 0],
+                    "speed": [20, 20, 20]
+                }
+            },
+            "kicking": {
+                "step0": {
+                    "module": "kr",
+                    "command": "move",
+                    "position": [306, 306, 306],
+                    "speed": [100, 100, 100]
+                }
+            }
+        }
+        
+    }
+}
